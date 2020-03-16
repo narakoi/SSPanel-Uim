@@ -50,6 +50,16 @@
     {/if}
 {/function}
 
+{function displaySort30Node node=null}
+    {$sort30Node = URL::getTrojanItem($user, $node['raw_node'], false)}
+    <p>节点地址：<span class="card-tag tag-blue">{$sort30Node['address']}</span></p>
+    <p>节点端口：<span class="card-tag tag-volcano">{$sort30Node['port']}</span></p>
+    <p>连接密码：<span class="card-tag tag-geekblue">{$sort30Node['passwd']}</span></p>
+    {if $sort30Node['host'] != $sort30Node['address']}
+        <p>HOST&PEER：<span class="card-tag tag-green">{$sort30Node['host']}</span></p>
+    {/if}
+{/function}
+
 {function displayNodeLink node=null}
     <div class="tiptitle">
         <a href="javascript:void(0);">{$node['name']}</a>
@@ -150,8 +160,8 @@
                                     </div>
                                 </div>
                                 <div class="nodestatus">
-                                    <div class="{if $node['online'] == '1'}nodeonline{elseif $node['online'] == '0'}nodeunset{else}nodeoffline{/if}">
-                                        <i class="material-icons">{if $node['online']=='1'}cloud_queue{elseif $node['online']=='0'}wifi_off{else}flash_off{/if}</i>
+                                    <div class="{if $node['online'] == '1' || $node['sort'] == 30}nodeonline{elseif $node['online'] == '0'}nodeunset{else}nodeoffline{/if}">
+                                        <i class="material-icons">{if $node['online']=='1' || $node['sort'] == 30}cloud_queue{elseif $node['online']=='0'}wifi_off{else}flash_off{/if}</i>
                                     </div>
                                 </div>
 
@@ -172,7 +182,7 @@
                                         {$relay_rule = $tools->pick_out_relay_rule($node['id'], $user->port, $relay_rules)}
                                     {/if}
 
-                                    {if $node['mu_only'] != 1 && ($node['sort'] != 11 || $node['sort'] != 12 || $node['sort'] != 13)}
+                                    {if $node['mu_only'] != 1 && !in_array($node['sort'], [11, 12, 13, 30])}
                                         <div class="tiptitle">
                                             <a href="javascript:void(0);" onClick="urlChange('{$node['id']}',0,{if $relay_rule != null}{$relay_rule->id}{else}0{/if})">
                                                 {$node['name']}{if $relay_rule != null} - {$relay_rule->dist_node()->name}{/if}
@@ -185,11 +195,11 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    {elseif $node['sort'] == 11 || $node['sort'] == 12 || $node['sort'] == 13}
+                                    {elseif in_array($node['sort'], [11, 12, 13, 30])}
                                         {displayNodeLink node=$node}
                                     {/if}
 
-                                    {if $node['sort'] == 0 || $node['sort'] == 10 || $node['sort'] == 11 || $node['sort'] == 12 || $node['sort'] == 13}
+                                    {if in_array($node['sort'], [0, 10, 11, 12, 13, 30])}
                                         {$point_node=$node}
                                     {/if}
 
@@ -226,6 +236,10 @@
                                         {displaySort13Node node=$node}
                                     {/if}
 
+                                    {if $node['sort'] == 30}
+                                        {displaySort30Node node=$node}
+                                    {/if}
+
                                 {/if}
 
                             </div>
@@ -250,8 +264,8 @@
                                         <div class="tile tile-collapse">
                                             <div data-toggle="tile" data-target="#heading{$node['id']}">
                                                 <div class="tile-side pull-left" data-ignore="tile">
-                                                    <div class="avatar avatar-sm {if $node['online']=='1'}nodeonline{elseif $node['online']=='0'}nodeunset{else}nodeoffline{/if}">
-                                                        <span class="material-icons">{if $node['online']=='1'}cloud_queue{elseif $node['online']=='0'}wifi_off{else}flash_off{/if}</span>
+                                                    <div class="avatar avatar-sm {if $node['online']=='1' || $node['sort'] == 30}nodeonline{elseif $node['online']=='0'}nodeunset{else}nodeoffline{/if}">
+                                                        <span class="material-icons">{if $node['online']=='1' || $node['sort'] == 30}cloud_queue{elseif $node['online']=='0'}wifi_off{else}flash_off{/if}</span>
                                                     </div>
                                                 </div>
                                                 <div class="tile-inner">
@@ -315,18 +329,18 @@
                                                         <div class="card nodetip-table">
                                                             <div class="card-main">
                                                                 <div class="card-inner">
-                                                                    {if $node['mu_only'] != 1 && ($node['sort'] != 11 || $node['sort'] != 12 || $node['sort'] != 13)}
+                                                                    {if $node['mu_only'] != 1 && !in_array($node['sort'], [11, 12, 13, 30])}
                                                                         <p class="card-heading">
                                                                             <a href="javascript:void(0);"
                                                                                onClick="urlChange('{$node['id']}',0,{if $relay_rule != null}{$relay_rule->id}{else}0{/if})">{$node['name']}
                                                                                 {if $relay_rule != null} - {$relay_rule->dist_node()->name}{/if}</a>
                                                                             <span class="label label-brand-accent">←点击节点查看配置信息</span>
                                                                         </p>
-                                                                    {elseif $node['sort'] == 11 || $node['sort'] == 12 || $node['sort'] == 13}
+                                                                    {elseif in_array($node['sort'], [11, 12, 13, 30])}
                                                                         {displayNodeLink node=$node}
                                                                     {/if}
 
-                                                                    {if $node['sort'] == 0 || $node['sort'] == 10 || $node['sort'] == 11 || $node['sort'] == 12 || $node['sort'] == 13}
+                                                                    {if in_array($node['sort'], [0, 10, 11, 12, 13, 30])}
                                                                         {$point_node = $node}
                                                                     {/if}
 
@@ -364,6 +378,10 @@
 
                                                                     {if $node['sort'] == 13}
                                                                         {displaySort13Node node=$node}
+                                                                    {/if}
+
+                                                                    {if $node['sort'] == 30}
+                                                                        {displaySort30Node node=$node}
                                                                     {/if}
 
                                                                 </div>

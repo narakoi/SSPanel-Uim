@@ -83,6 +83,9 @@ class AppURI
                             : '');
                         $return = $item['remark'] . ' = vmess, ' . $item['add'] . ', ' . $item['port'] . ', username = ' . $item['id'] . $ws . $tls;
                         break;
+                    case 'trojan':
+                        $return = ($item['remark'] . ' = trojan, ' . $item['address'] . ', ' . $item['port'] . ', password=' . $item['passwd']);
+                        break;
                 }
                 break;
         }
@@ -390,6 +393,13 @@ class AppURI
                     }
                 }
                 $return = ('vmess://' . Tools::base64_url_encode('chacha20-poly1305:' . $item['id'] . '@' . $item['add'] . ':' . $item['port']) . '?remarks=' . rawurlencode($item['remark']) . $obfs . $tls);
+                break;
+            case 'trojan':
+                $return  = ('trojan://' . $item['passwd'] . '@' . $item['address'] . ':' . $item['port']);
+                if ($item['host'] != $item['address']) {
+                    $return .= ('?peer=' . $item['host']);
+                }
+                $return .= ('#' . rawurlencode($item['remark']));
                 break;
         }
         return $return;

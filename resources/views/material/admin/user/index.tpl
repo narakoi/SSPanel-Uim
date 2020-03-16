@@ -174,6 +174,7 @@
                 {"data": "online_ip_count", "orderable": false},
                 {"data": "last_ss_time", "orderable": false},
                 {"data": "used_traffic"},
+                {"data": "trojan_used_traffic"},
                 {"data": "enable_traffic"},
                 {"data": "last_checkin_time", "orderable": false},
                 {"data": "today_traffic"},

@@ -848,4 +848,13 @@ class User extends Model
             $codeq->save();
         }
     }
+
+    /**
+     * 所有 Trojan 节点已用流量
+     */
+    public function trojan_used_traffic(): string
+    {
+        $user = TrojanUser::where('user_id', $this->id)->first();
+        return $user->total;
+    }
 }

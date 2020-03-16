@@ -53,6 +53,7 @@ class UserController extends AdminController
             'online_ip_count'       => '在线IP数',
             'last_ss_time'          => '上次使用时间',
             'used_traffic'          => '已用流量/GB',
+            'trojan_used_traffic'   => 'Trojan已用/GB',
             'enable_traffic'        => '总流量/GB',
             'last_checkin_time'     => '上次签到时间',
             'today_traffic'         => '今日流量/MB',
@@ -453,7 +454,7 @@ class UserController extends AdminController
         $limit_length = $request->getParam('length');
         $search       = $request->getParam('search')['value'];
 
-        if ($order_field == 'used_traffic') {
+        if ($order_field == 'used_traffic' || $order_field == 'trojan_used_traffic') {
             $order_field = 'u + d';
         } elseif ($order_field == 'enable_traffic') {
             $order_field = 'transfer_enable';
@@ -601,7 +602,8 @@ class UserController extends AdminController
                 }
             }
 
-            $tempdata['top_up'] = $user->get_top_up();
+            $tempdata['top_up']               = $user->get_top_up();
+            $tempdata['trojan_used_traffic']  = Tools::flowToGB($user->trojan_used_traffic());
 
             $data[] = $tempdata;
         }

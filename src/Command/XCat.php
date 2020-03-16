@@ -105,6 +105,10 @@ class XCat
                 return PortAutoChange::index();
             case ('initdocuments'):
                 return $this->initdocuments();
+            case ('trojan_checkjob'):
+                return TrojanJob::CheckJob();
+            case ('trojan_dailyjob'):
+                return TrojanJob::DailyJob();
             default:
                 return $this->defaultAction();
         }
@@ -126,6 +130,8 @@ class XCat
         echo ('  detectConfigs - 检查数据库内新增的配置' . PHP_EOL);
         echo ('  initdocuments - 下载用户使用文档至服务器' . PHP_EOL);
         echo ('  portAutoChange - [实验]  SS 单端口被墙自动换' . PHP_EOL);
+        echo ('  trojan_checkjob - Trojan' . PHP_EOL);
+        echo ('  trojan_dailyjob - Trojan' . PHP_EOL);
     }
 
     public function resetPort()
