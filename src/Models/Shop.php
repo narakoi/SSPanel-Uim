@@ -2,14 +2,33 @@
 
 namespace App\Models;
 
+/**
+ * Shop Model
+ *
+ * @property-read int    $id
+ * @property      string $name
+ * @property      float  $price
+ * @property      array  $content
+ * @property      int    $auto_renew
+ * @property      int    $auto_reset_bandwidth
+ * @property      int    $status
+ */
 class Shop extends Model
 {
     protected $connection = 'default';
+
     protected $table = 'shop';
+
+    protected $casts = [
+        'content'              => 'array',
+        'auto_renew'           => 'int',
+        'auto_reset_bandwidth' => 'int',
+        'status'               => 'int'
+    ];
 
     public function content()
     {
-        $content = json_decode($this->attributes['content'], true);
+        $content = $this->content;
         $content_text = '';
         $i = 0;
         foreach ($content as $key => $value) {
@@ -51,47 +70,40 @@ class Shop extends Model
 
     public function bandwidth()
     {
-        $content = json_decode($this->attributes['content']);
-        return $content->bandwidth ?? 0;
+        return $this->content['bandwidth'] ?? 0;
     }
 
     public function expire()
     {
-        $content = json_decode($this->attributes['content']);
-        return $content->expire ?? 0;
+        return $this->content['expire'] ?? 0;
     }
 
     public function reset()
     {
-        $content = json_decode($this->attributes['content']);
-        return $content->reset ?? 0;
+        return $this->content['reset'] ?? 0;
     }
 
     public function reset_value()
     {
-        $content = json_decode($this->attributes['content']);
-        return $content->reset_value ?? 0;
+        return $this->content['reset_value'] ?? 0;
     }
 
     public function reset_exp()
     {
-        $content = json_decode($this->attributes['content']);
-        return $content->reset_exp ?? 0;
+        return $this->content['reset_exp'] ?? 0;
     }
 
     public function traffic_package()
     {
-        $content = json_decode($this->attributes['content']);
-        return isset($content->traffic_package);
+        return $this->content['traffic_package'] ?? 0;
     }
 
     public function content_extra()
     {
-        $content = json_decode($this->attributes['content']);
-        if (isset($content->content_extra)) {
-            $content_extra = $content->content_extra;
+        if (isset($this->content['content_extra'])) {
+            $content_extra = $this->content['content_extra'];
             $content_extra = explode(';', $content_extra);
-            $content_extra_new = array();
+            $content_extra_new = [];
             foreach ($content_extra as $innerContent) {
                 if (false === strpos($innerContent, '-')) {
                     $innerContent = 'check-' . $innerContent;
@@ -108,35 +120,30 @@ class Shop extends Model
 
     public function user_class()
     {
-        $content = json_decode($this->attributes['content']);
-        return $content->class ?? 0;
+        return $this->content['class'] ?? 0;
     }
 
     public function class_expire()
     {
-        $content = json_decode($this->attributes['content']);
-        return $content->class_expire ?? 0;
+        return $this->content['class_expire'] ?? 0;
     }
 
     public function speedlimit()
     {
-        $content = json_decode($this->attributes['content']);
-        return $content->speedlimit ?? 0;
+        return $this->content['speedlimit'] ?? 0;
     }
 
     public function connector()
     {
-        $content = json_decode($this->attributes['content']);
-        return $content->connector ?? 0;
+        return $this->content['connector'] ?? 0;
     }
 
     public function buy($user, $is_renew = 0)
     {
-        $content = json_decode($this->attributes['content'], true);
-        $content_text = '';
+        $content = $this->content;
 
-        if (array_key_exists('traffic_package', $content)) {
-            $user->transfer_enable += $content['bandwidth'] * 1024 * 1024 * 1024;
+        if (isset($content['traffic_package'])) {
+            $user->transfer_enable += $this->bandwidth() * 1024 * 1024 * 1024;
             $user->save();
             return;
         }
