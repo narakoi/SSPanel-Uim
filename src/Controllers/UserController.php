@@ -8,7 +8,7 @@ use App\Services\{
     Config,
     Payment,
     BitPayment,
-    Gateway\ChenPay,
+    Gateway\ChenPay
 };
 use App\Models\{
     Ip,
